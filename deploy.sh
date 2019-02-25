@@ -5,7 +5,7 @@
 containers="maxscale mariadb1 mariadb2 mariadb3"
 
 # Do things for containers
-for c in "$containers" ; do
+for c in ${containers} ; do
     # Stop all running containers
     echo "Stopping container $c"
     docker stop $c > /dev/null

@@ -13,7 +13,7 @@ services:
     networks:
       - default 
     volumes:
-      - "./config/my.cnf.db1:/etc/mysql/my.cnf:ro"
+      - "./helpers/config/my.cnf.db1:/etc/mysql/my.cnf:ro"
     environment:
       -  MYSQL_ROOT_PASSWORD=root
     restart: always
@@ -25,8 +25,9 @@ services:
     networks:
       - default
     volumes:
-      - "./config/my.cnf.db2:/etc/mysql/my.cnf:ro"
-      - "./scripts/slave.sh:/tmp/slave.sh:ro"
+      - "./helpers/config/my.cnf.db2:/etc/mysql/my.cnf:ro"
+      - "./helpers/sql/slave.sql:/tmp/slave.sql:ro"
+      - "./helpers/scripts/prepare.sh:/tmp/prepare.sh:ro"
     environment:
       -  MYSQL_ROOT_PASSWORD=root
     restart: always
@@ -38,8 +39,9 @@ services:
     networks:
       - default
     volumes:
-      - "./config/my.cnf.db3:/etc/mysql/my.cnf:ro"
-      - "./scripts/slave.sh:/tmp/slave.sh:ro"
+      - "./helpers/config/my.cnf.db3:/etc/mysql/my.cnf:ro"
+      - "./helpers/sql/slave.sql:/tmp/slave.sql:ro"
+      - "./helpers/scripts/prepare.sh:/tmp/prepare.sh:ro"
     environment:
       -  MYSQL_ROOT_PASSWORD=root
     restart: always
@@ -51,7 +53,7 @@ services:
     networks:
       - default
     volumes:
-      - "./config/maxscale.cnf:/etc/maxscale.cnf:ro"
+      - "./helpers/config/maxscale.cnf:/etc/maxscale.cnf:ro"
     ports:
       - 3306:3306
     restart: always

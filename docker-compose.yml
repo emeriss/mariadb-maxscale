@@ -1,0 +1,59 @@
+version: '2'
+
+networks:
+  default:
+    external:
+      name: mysql 
+
+services:
+  mariadb1:
+    image: mariadb:latest
+    container_name: mariadb1 
+    hostname: mariadb1 
+    networks:
+      - default 
+    volumes:
+      - "./config/my.cnf.db1:/etc/mysql/my.cnf:ro"
+    environment:
+      -  MYSQL_ROOT_PASSWORD=root
+    restart: always
+
+  mariadb2:
+    image: mariadb:latest
+    container_name: mariadb2
+    hostname: mariadb2
+    networks:
+      - default
+    volumes:
+      - "./config/my.cnf.db2:/etc/mysql/my.cnf:ro"
+      - "./scripts/slave.sh:/tmp/slave.sh:ro"
+    environment:
+      -  MYSQL_ROOT_PASSWORD=root
+    restart: always
+
+  mariadb3:
+    image: mariadb:latest
+    container_name: mariadb3
+    hostname: mariadb3
+    networks:
+      - default
+    volumes:
+      - "./config/my.cnf.db3:/etc/mysql/my.cnf:ro"
+      - "./scripts/slave.sh:/tmp/slave.sh:ro"
+    environment:
+      -  MYSQL_ROOT_PASSWORD=root
+    restart: always
+
+  maxscale:
+    image: mariadb/maxscale 
+    container_name: maxscale
+    hostname: maxscale
+    networks:
+      - default
+    volumes:
+      - "./config/maxscale.cnf:/etc/maxscale.cnf:ro"
+    ports:
+      - 3306:3306
+    restart: always
+
+

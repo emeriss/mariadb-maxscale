@@ -1,0 +1,93 @@
+# MaxScale documentation:
+# https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale-22/
+
+# Global parameters
+#
+# Complete list of configuration options:
+# https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale-22-mariadb-maxscale-configuration-usage-scenarios/
+
+[maxscale]
+threads=auto
+
+# Server definitions
+#
+# Set the address of the server to the network
+# address of a MariaDB server.
+#
+
+[db1]
+type=server
+address=mariadb1
+port=3306
+protocol=MariaDBBackend
+
+[db2]
+type=server
+address=mariadb2
+port=3306
+protocol=MariaDBBackend
+
+[db3]
+type=server
+address=mariadb3
+port=3306
+protocol=MariaDBBackend
+
+# Monitor for the servers
+#
+# This will keep MaxScale aware of the state of the servers.
+# MariaDB Monitor documentation:
+# https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale-22-mariadb-monitor/
+
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=db1,db2,db3
+user=root
+password=root
+monitor_interval=2000
+detect_replication_lag=true
+auto_failover=1
+failover_timeout=10
+auto_rejoin=true
+failcount=5
+master_failure_timeout=2
+verify_master_failure=true
+switchover_timeout=90
+
+# Service definitions
+#
+# Service Definition for a read-only service and
+# a read/write splitting service.
+#
+[Read-Write-Service]
+type=service
+router=readwritesplit
+servers=db1,db2,db3
+user=root
+password=root
+
+# This service enables the use of the MaxAdmin interface
+# MaxScale administration guide:
+# https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale-22-maxadmin-admin-interface/
+
+[MaxAdmin-Service]
+type=service
+router=cli
+
+# Listener definitions for the services
+#
+# These listeners represent the ports the
+# services will listen on.
+#
+[Read-Write-Listener]
+type=listener
+service=Read-Write-Service
+protocol=MariaDBClient
+port=3306
+
+[MaxAdmin-Listener]
+type=listener
+service=MaxAdmin-Service
+protocol=maxscaled
+socket=default
